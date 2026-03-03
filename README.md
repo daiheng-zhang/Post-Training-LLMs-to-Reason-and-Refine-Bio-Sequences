@@ -2,7 +2,7 @@
 
 STRIDE is a reproducible post-training framework for discrete bio-sequence optimization with explicit edit trajectories. It supports GFP protein optimization and SMILES molecule optimization with a two-stage recipe: SFT (LLaMA-Factory) then RL (ms-swift; GRPO / GSPO / CISPO).
 
-![STRIDE model architecture](model.png)
+![STRIDE model architecture](STRIDE_arch.jpg)
 
 ## Installation
 
