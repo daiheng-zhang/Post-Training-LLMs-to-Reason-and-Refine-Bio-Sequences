@@ -1,0 +1,60 @@
+data:
+  train_files: ["data/mol_edit/swift/train.jsonl"]
+  val_files: ["data/mol_edit/swift/valid.jsonl"]
+  prompt_key: prompt
+  max_prompt_length: 1024
+  max_response_length: 256
+  train_batch_size: 64
+  val_batch_size: 64
+  shuffle: true
+
+model:
+  path: "Qwen/Qwen3-14B"
+  enable_gradient_checkpointing: true
+  use_remove_padding: true
+
+algorithm:
+  adv_estimator: grpo
+  kl_ctrl:
+    type: fixed
+    kl_coef: 0.001
+  grpo:
+    epsilon: 0.2
+
+trainer:
+  total_epochs: 5
+  max_steps: 25000
+  learning_rate: 1e-5
+  project_name: stride-molecule
+  experiment_name: chem-grpo
+  logger: [console, wandb]
+  save_freq: 100
+  test_freq: 100
+  save_total_limit: 2
+  default_local_dir: outputs/mol_edit/grpo
+  resume_mode: none
+  resume_from_path: null
+  load_args: null
+  save_only_model: true
+
+swift:
+  train_type: lora
+  lora_rank: 16
+  lora_alpha: 32
+  target_modules: [q_proj, k_proj, v_proj, o_proj, up_proj, down_proj]
+  reward_func: chem_reward
+  external_plugin: GRPO/chem_plugin.py
+  num_generations: 8
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 4
+  per_device_eval_batch_size: 1
+  logging_steps: 10
+  split_dataset_ratio: 0
+  attn_impl: flash_attn
+  adapters: null
+  ref_adapters: null
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null

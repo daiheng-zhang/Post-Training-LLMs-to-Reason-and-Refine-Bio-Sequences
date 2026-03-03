@@ -1,0 +1,11 @@
+log/
+wandb/
+baseline/*.json
+baseline/*.jsonl
+baseline/*.txt
+__pycache__/
+*.pyc
+*.out
+*.jsonl
+*.log
+outputs/

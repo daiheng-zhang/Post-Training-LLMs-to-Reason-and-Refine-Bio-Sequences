@@ -1,0 +1,56 @@
+# STRIDE molecule SFT configuration (LLaMA-Factory)
+
+model_name_or_path: Qwen/Qwen3-14B
+stage: sft
+finetuning_type: lora
+do_train: true
+do_eval: true
+
+deepspeed: configs/deepspeed/stage2.json
+
+quantization_bit: 8
+quantization_method: bitsandbytes
+lora_rank: 32
+lora_alpha: 64
+lora_dropout: 0.05
+lora_target:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - up_proj
+  - down_proj
+
+dataset_dir: data/mol_edit/sharegpt
+dataset: mol_edit_small_sharegpt_train_thinking
+eval_dataset: mol_edit_small_sharegpt_valid_thinking
+template: qwen3
+enable_thinking: true
+cutoff_len: 1536
+val_size: 0.0
+
+output_dir: outputs/mol_edit/sft
+overwrite_output_dir: true
+save_steps: 500
+save_total_limit: 2
+
+num_train_epochs: 5
+learning_rate: 5.0e-5
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 2
+gradient_checkpointing: true
+bf16: true
+seed: 42
+
+lr_scheduler_type: cosine
+warmup_steps: 20
+
+logging_steps: 10
+report_to: wandb
+run_name: stride_molecule_sft_qwen3_14b_qlora_thinking
+
+eval_strategy: steps
+eval_steps: 500
+load_best_model_at_end: true
+metric_for_best_model: eval_loss
+greater_is_better: false

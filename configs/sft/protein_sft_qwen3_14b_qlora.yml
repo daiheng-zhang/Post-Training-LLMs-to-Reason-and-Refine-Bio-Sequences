@@ -1,0 +1,59 @@
+# STRIDE protein SFT configuration (LLaMA-Factory)
+
+model_name_or_path: Qwen/Qwen3-14B
+stage: sft
+finetuning_type: lora
+do_train: true
+do_eval: true
+
+# DeepSpeed stage-2 is recommended for QLoRA.
+deepspeed: configs/deepspeed/stage2.json
+
+# QLoRA setup (paper-aligned)
+quantization_bit: 8
+quantization_method: bitsandbytes
+lora_rank: 32
+lora_alpha: 64
+lora_dropout: 0.05
+lora_target:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - up_proj
+  - down_proj
+
+# Replace with your dataset registry names or JSONL aliases.
+dataset_dir: data/gfp/sharegpt
+dataset: gfp_optimization_sharegpt_train
+eval_dataset: gfp_optimization_sharegpt_valid
+template: qwen3
+cutoff_len: 1536
+val_size: 0.0
+
+output_dir: outputs/gfp/sft
+overwrite_output_dir: true
+save_steps: 500
+save_total_limit: 2
+
+# Hyperparameters from paper appendix (SFT)
+num_train_epochs: 5
+learning_rate: 5.0e-5
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 2
+gradient_checkpointing: true
+bf16: true
+seed: 42
+
+lr_scheduler_type: cosine
+warmup_steps: 20
+
+logging_steps: 10
+report_to: wandb
+run_name: stride_protein_sft_qwen3_14b_qlora
+
+eval_strategy: steps
+eval_steps: 500
+load_best_model_at_end: true
+metric_for_best_model: eval_loss
+greater_is_better: false

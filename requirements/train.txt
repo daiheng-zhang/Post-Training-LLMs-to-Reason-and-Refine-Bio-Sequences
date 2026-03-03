@@ -1,0 +1,6 @@
+-r base.txt
+llamafactory>=0.9.0
+ms-swift>=3.2.0
+vllm>=0.7.0
+bitsandbytes>=0.43.0
+accelerate>=0.34.0
